@@ -1,5 +1,5 @@
 name: widget_record_video
-description: "A Plugin to record video widget in android and ios"
+description: "A Plugin to record mp4 video widget using ffmpeg and AVFoundation on iOS, MediaCodec on Android"
 version: 0.0.3
 homepage: https://github.com/kullhy/widget_record_video
 
