@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:widget_record_video/widget_record_video.dart';
 import 'package:video_player/video_player.dart';
@@ -20,14 +20,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   final RecordingController recordingController = RecordingController();
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
-  late Timer _colorChangeTimer;
+  Timer? _colorChangeTimer;
+  Timer? _timer; // Timer for the countdown
   VideoPlayerController? _videoController;
   String? _videoPath;
+  int elapsedTime = 0; // Time counter variable
+
+  String? outputPath;
 
   @override
   void initState() {
     super.initState();
-
+    _getOutPutPath();
     // Start color change timer for the animated container
     _animationController = AnimationController(
       vsync: this,
@@ -44,17 +48,43 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _colorChangeTimer.cancel();
+    _colorChangeTimer?.cancel();
+    _timer?.cancel(); // Cancel the countdown timer
     _videoController?.dispose();
     super.dispose();
   }
 
+  Future<void> _getOutPutPath() async {
+    Directory? appDir = await getDownloadsDirectory();
+
+    outputPath = '${appDir?.path}/result.mp4';
+  }
+
   void _startRecording() {
+    setState(() {
+      elapsedTime = 0; // Reset the time counter
+    });
     recordingController.start?.call();
+
+    // Start the countdown timer
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        elapsedTime++;
+      });
+    });
   }
 
   Future<void> _stopRecording() async {
     recordingController.stop?.call();
+    _timer?.cancel(); // Stop the countdown timer
+  }
+
+  void _pauseRecording() async {
+    recordingController.pauseRecord?.call();
+  }
+
+  void _continueRecording() {
+    recordingController.continueRecord?.call();
   }
 
   Future<void> _onRecordingComplete(String path) async {
@@ -86,6 +116,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                   child: RecordingWidget(
                     controller: recordingController,
                     onComplete: _onRecordingComplete,
+                    outputPath: "",
                     child: AnimatedBuilder(
                       animation: _colorAnimation,
                       builder: (context, child) {
@@ -93,6 +124,16 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                           width: 200,
                           height: 200,
                           color: _colorAnimation.value,
+                          child: Center(
+                            child: Text(
+                              '$elapsedTime', // Display elapsed seconds
+                              style: const TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -110,6 +151,20 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                     ElevatedButton(
                       onPressed: _stopRecording,
                       child: const Text('Stop Recording'),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _pauseRecording,
+                      child: const Text('Pause Recording'),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _continueRecording,
+                      child: const Text('Continue Recording'),
                     ),
                   ],
                 ),

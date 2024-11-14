@@ -1,7 +1,4 @@
-
-
 library widget_record_video;
 
-export 'recording_controller.dart';
-export 'recording_widget.dart';
-
+export 'src/recording_controller.dart';
+export 'src/recording_widget.dart';
