@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     Directory? appDir = await getDownloadsDirectory();
 
     outputPath = '${appDir?.path}/result.mp4';
+    setState(() {});
   }
 
   void _startRecording() {
@@ -116,7 +117,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                   child: RecordingWidget(
                     controller: recordingController,
                     onComplete: _onRecordingComplete,
-                    outputPath: "",
+                    outputPath: outputPath,
                     child: AnimatedBuilder(
                       animation: _colorAnimation,
                       builder: (context, child) {
