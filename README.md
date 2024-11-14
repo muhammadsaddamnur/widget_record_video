@@ -24,7 +24,7 @@ Add `widget_record_video` to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  widget_record_video: ^0.0.3
+  widget_record_video: ^0.0.4
 ```
 
 ## Usage
