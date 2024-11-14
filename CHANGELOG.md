@@ -1,3 +1,6 @@
+## 0.0.3
+* **[Update]** update readme.md
+
 ## 0.0.2
 * **[Feature]** add pause and continue record, add custom outputPath
 

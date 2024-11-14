@@ -1,6 +1,6 @@
 name: widget_record_video
 description: "A Plugin to record video widget in android and ios"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/kullhy/widget_record_video
 
 environment:
