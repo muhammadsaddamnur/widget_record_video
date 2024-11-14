@@ -34,59 +34,28 @@ dependencies:
 `RecordingWidget` is the main widget that will record the screen content of a specified widget. Here's how to set it up:
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:widget_record_video/widget_record_video.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   final RecordingController _recordingController = RecordingController();
+  _recordingController.start?.call();
+  _recordingController.stop?.call();
+  _recordingController.pauseRecord?.call();
+  _recordingController.coninueRecord?.call();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Widget Record Video Example")),
-      body: Center(
-        child: RecordingWidget(
-          controller: _recordingController,
-          limitTime: 120, // Maximum recording time in seconds
-          onComplete: (filePath) {
-            print("Video saved at: $filePath");
-          },
-          child: Container(
-            color: Colors.blue,
-            width: 200,
-            height: 200,
-            child: Center(child: Text("Recording Area")),
-          ),
-        ),
+
+  RecordingWidget(
+    controller: _recordingController,
+    limitTime: 120, // Maximum recording time in seconds
+    onComplete: (filePath) {
+      print("Video saved at: $filePath");
+    },
+    child: Container(
+      color: Colors.blue,
+      width: 200,
+      height: 200,
+        child: Center(child: Text("Recording Area")),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Start recording
-          _recordingController.start?.call();
-        },
-        child: Icon(Icons.videocam),
-      ),
-    );
-  }
-}
+  ),
+
 ```
 
 ### Key Components
@@ -96,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
 This widget encapsulates the content you want to record.
 
 - **`child`**: The widget to be recorded.
+- **`outputPath`**: Custom save location as desired.
 - **`controller`**: An instance of `RecordingController` that manages recording actions.
 - **`limitTime`**: Sets the maximum recording time in seconds. For unlimited recording, set this to `-1`.
 - **`onComplete`**: Callback triggered after recording ends, providing the file path to the saved video.
@@ -106,7 +76,8 @@ The controller allows you to start and stop recording via these functions:
 
 - **`start`**: A function to initiate recording.
 - **`stop`**: A function to terminate recording.
-
+- **`pauseRecord`**: A function to pause the recording process.
+- **`continue`**: A function to continue the recording process
 ## Important Notes
 
 - This plugin leverages `flutter_quick_video_encoder` for encoding; ensure your app has appropriate permissions for file storage.
